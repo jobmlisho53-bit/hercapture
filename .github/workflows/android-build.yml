@@ -27,6 +27,31 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x ./gradlew
 
+    - name: Ensure Gradle Wrapper is Available
+      run: |
+        # Check if wrapper jar exists, if not let's try to initialize it
+        if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+          echo "Gradle wrapper JAR not found, initializing..."
+          # Create a minimal build.gradle to force wrapper creation
+          mkdir -p temp_dir
+          cd temp_dir
+          echo "plugins { id 'java' }" > build.gradle
+          echo "task wrapper(type: Wrapper) { gradleVersion = '8.0' }" >> build.gradle
+          # Run the wrapper task from the main directory
+          cd ..
+          ./gradlew -b temp_dir/build.gradle wrapper
+          rm -rf temp_dir
+        fi
+
+    - name: Verify Gradle Wrapper
+      run: |
+        echo "Checking gradle wrapper files..."
+        ls -la gradle/wrapper/
+        if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+          echo "ERROR: gradle-wrapper.jar still missing!"
+          exit 1
+        fi
+
     - name: Build Project
       run: |
         ./gradlew build
