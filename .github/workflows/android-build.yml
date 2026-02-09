@@ -24,16 +24,13 @@ jobs:
         api-level: 34
         build-tools-version: '34.0.0'
 
-    - name: Install Gradle
-      uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-version: '8.0'
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
 
     - name: Build Project
       run: |
-        # Use gradle directly instead of gradlew
-        gradle build
-        gradle assembleDebug
+        ./gradlew build
+        ./gradlew assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
