@@ -24,26 +24,16 @@ jobs:
         api-level: 34
         build-tools-version: '34.0.0'
 
-    - name: Make gradlew executable
-      run: chmod +x ./gradlew
+    - name: Install Gradle
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.0'
 
-    - name: Create Gradle Directory Structure
+    - name: Build Project
       run: |
-        mkdir -p gradle/wrapper
-        # Only create the properties file, let Gradle download the JAR
-        echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
-        echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-        echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.0-bin.zip" >> gradle/wrapper/gradle-wrapper.properties
-        echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
-        echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-
-    - name: Initialize Gradle and Build
-      run: |
-        # Run a simple Gradle command to trigger wrapper download
-        ./gradlew --version
-        # Now build the project
-        ./gradlew build
-        ./gradlew assembleDebug
+        # Use gradle directly instead of gradlew
+        gradle build
+        gradle assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
