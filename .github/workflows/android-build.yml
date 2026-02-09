@@ -3,8 +3,6 @@ name: Build Android App
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -29,11 +27,12 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x ./gradlew
 
-    - name: Build with Gradle
-      run: ./gradlew build
-
-    - name: Assemble Debug APK
-      run: ./gradlew assembleDebug
+    - name: Build and Assemble APK
+      run: |
+        # Let Gradle download the wrapper JAR automatically
+        ./gradlew --version
+        ./gradlew build
+        ./gradlew assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
