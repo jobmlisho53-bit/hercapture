@@ -27,10 +27,21 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x ./gradlew
 
-    - name: Build and Assemble APK
+    - name: Create Gradle Directory Structure
       run: |
-        # Let Gradle download the wrapper JAR automatically
+        mkdir -p gradle/wrapper
+        # Only create the properties file, let Gradle download the JAR
+        echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
+        echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+        echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.0-bin.zip" >> gradle/wrapper/gradle-wrapper.properties
+        echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
+        echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+
+    - name: Initialize Gradle and Build
+      run: |
+        # Run a simple Gradle command to trigger wrapper download
         ./gradlew --version
+        # Now build the project
         ./gradlew build
         ./gradlew assembleDebug
 
